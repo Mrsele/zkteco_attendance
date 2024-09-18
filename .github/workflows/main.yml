@@ -1,12 +1,16 @@
+
 name: zkteco_attendance
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*.*.*'
+  workflow_dispatch:  # Allows manual trigger from the GitHub Actions tab
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,15 +20,15 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'  # Specify the Node.js version you need
 
     - name: Install dependencies
       run: npm install
 
-    - name: Build
-      run: npm run build
+    - name: Build the package
+      run: npm run build  # Adjust this command if your build script is different
 
     - name: Publish package
       run: npm publish
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_JS_TOKEN_KEY }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_JS_TOKEN_KEY }}  # Ensure NPM_TOKEN is added to your repository secrets
