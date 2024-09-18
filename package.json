@@ -5,6 +5,8 @@
   "main": "zklib.js",
   "scripts": {
     "test": "node test",
+    "build": "node index", 
+
     "start": "node index"
   },
   "repository": {
