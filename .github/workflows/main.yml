@@ -1,49 +1,35 @@
-name: Publish zkteco_attendance Package
+name: CI/CD
 
-# Trigger this workflow on push with version tags like v1.3.1
 on:
   push:
     tags:
       - 'v*.*.*'
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the code from the repository
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up Node.js environment
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.NPM_JS_TOKEN_KEY }}
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'  # You can change this to your preferred version
+        node-version: '14' # or your preferred version
 
-    # Step 3: Install dependencies
     - name: Install dependencies
       run: npm install
 
-    # Step 4: Run tests (optional step, based on your package.json script)
-    - name: Run tests
-      run: npm test
+    - name: Build the package
+      run: npm run build # if applicable
 
-    # Step 5: Publish to npm
-    - name: Publish to npm
+    - name: Publish package
       run: npm publish
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # This will pull the npm token from GitHub secrets
-
-    # Step 6: Create a GitHub release (optional)
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Automatic release for version ${{ github.ref }}.
-        draft: false
-        prerelease: false
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
