@@ -1,7 +1,7 @@
 const ZKLib = require('./zklib')
 
 const test = async () => {
-
+// may not need a communication key or pass !!!!!!.
   let zkInstance = new ZKLib('10.10.1.26', 4370, 10000, 4000,123);
   
   try {
